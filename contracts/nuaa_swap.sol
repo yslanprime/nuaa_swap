@@ -104,7 +104,7 @@ contract NuaaSwap is Ownable, Pausable, ReentrancyGuard {
         address tokenOut = (_tokenIn == token0) ? token1 : token0;
         uint reserveOut = IERC20(tokenOut).balanceOf(address(this));
 
-        // LP %3 Fee
+        // LP %3 price
         uint amountInWithLpFee = _amountIn * 997;
         uint numerator = amountInWithLpFee * reserveOut;
         uint denominator = (reserveIn * 1000) + amountInWithLpFee;
@@ -112,7 +112,7 @@ contract NuaaSwap is Ownable, Pausable, ReentrancyGuard {
         
         require(amountOut >= _minAmountOut, "NuaaSwap: INSUFFICIENT_OUTPUT_AMOUNT"); // 滑点保护检查
 
-        // Move Fee to feeTo Address
+        // Move Fee to feeTo Address (for NuaaSwap providers)
         if (feeTo != address(0) && protocolFeeBps > 0) {
             uint protocolFee = (amountOut * protocolFeeBps) / 10000;
             if (protocolFee > 0) {
