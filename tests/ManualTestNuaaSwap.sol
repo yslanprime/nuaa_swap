@@ -7,12 +7,12 @@ import "../contracts/corn_b.sol";
 
 /**
  * @title ManualTestNuaaSwap
- * @dev 手动测试合约 - 用于在 Remix 中交互式测试 NuaaSwap 功能
+ * @dev Manual test contract for interactive testing of NuaaSwap functions in Remix
  * 
- * 使用说明：
- * 1. 部署此合约
- * 2. 调用 setup() 初始化
- * 3. 按顺序测试各个功能
+ * Usage instructions:
+ * 1. Deploy this contract
+ * 2. Call setup() to initialize
+ * 3. Test functions in order
  */
 contract ManualTestNuaaSwap {
     NuaaSwap public swapContract;
@@ -22,12 +22,12 @@ contract ManualTestNuaaSwap {
     address public owner;
     bool public isSetup = false;
     
-    // 事件用于记录测试结果
+    // Events for recording test results
     event TestResult(string testName, bool success, string message);
     event ContractInfo(string info, address contractAddress);
     
     modifier onlyAfterSetup() {
-        require(isSetup, "请先调用 setup() 函数");
+        require(isSetup, "Please call setup() function first");
         _;
     }
     
@@ -36,53 +36,53 @@ contract ManualTestNuaaSwap {
     }
     
     /**
-     * @dev 步骤1: 设置测试环境
+     * @dev Step 1: Setup test environment
      */
     function setup() public {
-        require(!isSetup, "已经初始化过了");
+        require(!isSetup, "Already initialized");
         
-        // 部署代币合约
+        // Deploy token contracts
         tokenA = new TokenA();
         tokenB = new TokenB();
         
-        // 部署交换合约
+        // Deploy swap contract
         swapContract = new NuaaSwap(address(tokenA), address(tokenB));
         
         isSetup = true;
         
-        emit ContractInfo("TokenA 部署完成", address(tokenA));
-        emit ContractInfo("TokenB 部署完成", address(tokenB));
-        emit ContractInfo("NuaaSwap 部署完成", address(swapContract));
-        emit TestResult("setup", true, "测试环境初始化成功");
+        emit ContractInfo("TokenA deployed", address(tokenA));
+        emit ContractInfo("TokenB deployed", address(tokenB));
+        emit ContractInfo("NuaaSwap deployed", address(swapContract));
+        emit TestResult("setup", true, "Test environment initialized successfully");
     }
     
     /**
-     * @dev 步骤2: 添加初始流动性
+     * @dev Step 2: Add initial liquidity
      */
     function addInitialLiquidity() public onlyAfterSetup {
         uint256 amountA = 1000 * 10**18;
         uint256 amountB = 2000 * 10**18;
         
-        // 授权
+        // Approve
         tokenA.approve(address(swapContract), amountA);
         tokenB.approve(address(swapContract), amountB);
         
-        // 添加流动性
+        // Add liquidity
         uint256 shares = swapContract.add_liquidity(amountA, amountB);
         
         emit TestResult("addInitialLiquidity", shares > 0, 
-            string(abi.encodePacked("获得流动性份额: ", uint2str(shares))));
+            string(abi.encodePacked("Received liquidity shares: ", uint2str(shares))));
     }
     
     /**
-     * @dev 步骤3: 测试 A -> B 交换
+     * @dev Step 3: Test A -> B swap
      */
     function testSwapAtoB(uint256 swapAmount) public onlyAfterSetup {
-        require(swapAmount > 0, "交换数量必须大于0");
+        require(swapAmount > 0, "Swap amount must be greater than 0");
         
         uint256 balanceBefore = tokenB.balanceOf(address(this));
         
-        // 授权和交换
+        // Approve and swap
         tokenA.approve(address(swapContract), swapAmount);
         uint256 amountOut = swapContract.swap(
             address(tokenA), 
@@ -94,18 +94,18 @@ contract ManualTestNuaaSwap {
         uint256 balanceAfter = tokenB.balanceOf(address(this));
         
         emit TestResult("swapAtoB", amountOut > 0,
-            string(abi.encodePacked("输入 A: ", uint2str(swapAmount), ", 获得 B: ", uint2str(amountOut))));
+            string(abi.encodePacked("Input A: ", uint2str(swapAmount), ", Got B: ", uint2str(amountOut))));
     }
     
     /**
-     * @dev 步骤4: 测试 B -> A 交换
+     * @dev Step 4: Test B -> A swap
      */
     function testSwapBtoA(uint256 swapAmount) public onlyAfterSetup {
-        require(swapAmount > 0, "交换数量必须大于0");
+        require(swapAmount > 0, "Swap amount must be greater than 0");
         
         uint256 balanceBefore = tokenA.balanceOf(address(this));
         
-        // 授权和交换
+        // Approve and swap
         tokenB.approve(address(swapContract), swapAmount);
         uint256 amountOut = swapContract.swap(
             address(tokenB), 
@@ -117,75 +117,75 @@ contract ManualTestNuaaSwap {
         uint256 balanceAfter = tokenA.balanceOf(address(this));
         
         emit TestResult("swapBtoA", amountOut > 0,
-            string(abi.encodePacked("输入 B: ", uint2str(swapAmount), ", 获得 A: ", uint2str(amountOut))));
+            string(abi.encodePacked("Input B: ", uint2str(swapAmount), ", Got A: ", uint2str(amountOut))));
     }
     
     /**
-     * @dev 步骤5: 测试移除流动性
+     * @dev Step 5: Test remove liquidity
      */
     function testRemoveLiquidity(uint256 sharesToRemove) public onlyAfterSetup {
-        require(sharesToRemove > 0, "移除份额必须大于0");
+        require(sharesToRemove > 0, "Shares to remove must be greater than 0");
         
         uint256 userShares = swapContract.liquidityShares(address(this));
-        require(sharesToRemove <= userShares, "移除份额超过拥有量");
+        require(sharesToRemove <= userShares, "Shares to remove exceed owned amount");
         
         (uint256 amount0, uint256 amount1) = swapContract.remove_liquidity(sharesToRemove);
         
         emit TestResult("removeLiquidity", amount0 > 0 && amount1 > 0,
-            string(abi.encodePacked("移除份额: ", uint2str(sharesToRemove), 
-                                    ", 获得 A: ", uint2str(amount0), 
-                                    ", 获得 B: ", uint2str(amount1))));
+            string(abi.encodePacked("Removed shares: ", uint2str(sharesToRemove), 
+                                    ", Got A: ", uint2str(amount0), 
+                                    ", Got B: ", uint2str(amount1))));
     }
     
     /**
-     * @dev 步骤6: 测试暂停功能
+     * @dev Step 6: Test pause function
      */
     function testPause() public onlyAfterSetup {
-        require(msg.sender == owner, "只有所有者可以暂停");
+        require(msg.sender == owner, "Only owner can pause");
         
         swapContract.pause();
         
-        emit TestResult("pause", true, "合约已暂停");
+        emit TestResult("pause", true, "Contract paused");
     }
     
     /**
-     * @dev 步骤7: 测试恢复功能
+     * @dev Step 7: Test unpause function
      */
     function testUnpause() public onlyAfterSetup {
-        require(msg.sender == owner, "只有所有者可以恢复");
+        require(msg.sender == owner, "Only owner can unpause");
         
         swapContract.unpause();
         
-        emit TestResult("unpause", true, "合约已恢复");
+        emit TestResult("unpause", true, "Contract unpaused");
     }
     
     /**
-     * @dev 步骤8: 测试设置协议费用
+     * @dev Step 8: Test set protocol fee
      */
     function testSetProtocolFee(uint256 feeBps) public onlyAfterSetup {
-        require(msg.sender == owner, "只有所有者可以设置费用");
+        require(msg.sender == owner, "Only owner can set fee");
         
         swapContract.setProtocolFee(feeBps);
         
         emit TestResult("setProtocolFee", true,
-            string(abi.encodePacked("协议费用设置为: ", uint2str(feeBps), " bps")));
+            string(abi.encodePacked("Protocol fee set to: ", uint2str(feeBps), " bps")));
     }
     
     /**
-     * @dev 步骤9: 测试设置费用接收地址
+     * @dev Step 9: Test set fee receiver address
      */
     function testSetFeeTo(address feeReceiver) public onlyAfterSetup {
-        require(msg.sender == owner, "只有所有者可以设置费用接收地址");
+        require(msg.sender == owner, "Only owner can set fee receiver");
         
         swapContract.setFeeTo(feeReceiver);
         
-        emit TestResult("setFeeTo", true, "费用接收地址已设置");
+        emit TestResult("setFeeTo", true, "Fee receiver address set");
     }
     
-    // ============ 查询函数 ============
+    // ============ Query Functions ============
     
     /**
-     * @dev 获取合约状态信息
+     * @dev Get contract status info
      */
     function getContractInfo() public view onlyAfterSetup returns (
         address tokenAAddr,
@@ -212,7 +212,7 @@ contract ManualTestNuaaSwap {
     }
     
     /**
-     * @dev 获取用户代币余额
+     * @dev Get user token balances
      */
     function getUserBalances() public view onlyAfterSetup returns (
         uint256 balanceA,
@@ -225,15 +225,15 @@ contract ManualTestNuaaSwap {
     }
     
     /**
-     * @dev 预估交换输出
+     * @dev Estimate swap output
      */
     function estimateSwapOutput(address tokenIn, uint256 amountIn) public view onlyAfterSetup returns (uint256) {
-        require(tokenIn == address(tokenA) || tokenIn == address(tokenB), "无效的输入代币");
+        require(tokenIn == address(tokenA) || tokenIn == address(tokenB), "Invalid input token");
         
         uint256 reserveIn = (tokenIn == address(tokenA)) ? swapContract.reserve0() : swapContract.reserve1();
         uint256 reserveOut = (tokenIn == address(tokenA)) ? swapContract.reserve1() : swapContract.reserve0();
         
-        // 计算输出（考虑 0.3% 手续费）
+        // Calculate output (considering 0.3% fee)
         uint256 amountInWithFee = amountIn * 997;
         uint256 numerator = amountInWithFee * reserveOut;
         uint256 denominator = (reserveIn * 1000) + amountInWithFee;
@@ -241,10 +241,10 @@ contract ManualTestNuaaSwap {
         return numerator / denominator;
     }
     
-    // ============ 工具函数 ============
+    // ============ Utility Functions ============
     
     /**
-     * @dev 将 uint256 转换为字符串
+     * @dev Convert uint256 to string
      */
     function uint2str(uint256 _i) internal pure returns (string memory str) {
         if (_i == 0) {
@@ -270,10 +270,10 @@ contract ManualTestNuaaSwap {
     }
     
     /**
-     * @dev 紧急提取代币（仅所有者）
+     * @dev Emergency withdraw tokens (owner only)
      */
     function emergencyWithdraw() public {
-        require(msg.sender == owner, "只有所有者可以紧急提取");
+        require(msg.sender == owner, "Only owner can emergency withdraw");
         
         if (isSetup) {
             uint256 balanceA = tokenA.balanceOf(address(this));

@@ -8,15 +8,14 @@
 tests/
 ├── TestNuaaSwap.sol          # 自动化单元测试合约
 ├── ManualTestNuaaSwap.sol    # 手动交互测试合约
-├── SimpleTestNuaaSwap.sol    # 简化版测试合约
 └── README_测试说明.md        # 本说明文档
 ```
 
 ## 🚀 快速开始
 
-### 方法一：使用自动化测试合约
+### 方法一：使用脚本自动化测试合约
 
-**推荐使用 SimpleTestNuaaSwap.sol** - 这是最简洁且无警告的版本
+**推荐使用 TestNuaaSwap.sol**
 
 1. **打开 Remix IDE** (https://remix.ethereum.org/)
 
@@ -26,7 +25,7 @@ tests/
 
 3. **编译合约**
    - 选择 Solidity 编译器版本 `0.8.20`
-   - 编译 `SimpleTestNuaaSwap.sol`（推荐）
+   - 编译 `TestNuaaSwap.sol`（推荐）
 
 4. **运行测试**
    - 切换到 "Solidity Unit Testing" 插件
@@ -186,47 +185,6 @@ estimateSwapOutput(tokenA_address, 100000000000000000000)
    - 费用设置生效
    - 权限控制正确
 
-## 🔍 故障排除
-
-### 常见问题：
-
-1. **"请先调用 setup() 函数"**
-   - 确保先调用 `setup()` 初始化
-
-2. **交易 revert**
-   - 检查 Gas 限制
-   - 确认代币余额充足
-   - 验证输入参数格式
-
-3. **权限错误**
-   - 确保使用合约部署者账户执行管理员功能
-
-4. **数值显示异常**
-   - 记住所有数值都是 wei 单位
-   - 实际值需要除以 10^18
-
-5. **编译器警告**
-   - **中文字符错误**：使用 `SimpleTestNuaaSwap.sol` 避免编码问题
-   - **未使用变量警告**：已在 `TestNuaaSwap.sol` 中修复
-   - **版本兼容性**：确保使用 Solidity 0.8.20
-
-### 选择合适的测试文件：
-
-- **SimpleTestNuaaSwap.sol** ✅ 推荐
-  - 无编译警告
-  - 简洁易懂
-  - 核心功能完整
-
-- **TestNuaaSwap.sol** ✅ 完整版
-  - 已修复所有警告
-  - 更详细的测试
-  - 包含边界条件测试
-
-- **ManualTestNuaaSwap.sol** ✅ 交互式
-  - 手动测试
-  - 实时查看结果
-  - 事件日志详细
-
 ## 📈 高级测试场景
 
 1. **大额交换测试**
@@ -241,5 +199,3 @@ estimateSwapOutput(tokenA_address, 100000000000000000000)
 3. **多用户场景**
    - 使用不同账户进行测试
    - 验证多用户流动性提供
-
-祝您测试顺利！如有问题，请检查 Remix 控制台的详细错误信息。 
