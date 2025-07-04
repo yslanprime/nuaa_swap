@@ -93,8 +93,17 @@ contract ManualTestNuaaSwap {
         
         uint256 balanceAfter = tokenB.balanceOf(address(this));
         
+        // Calculate actual received amount for debugging
+        uint256 actualReceived = balanceAfter - balanceBefore;
+        
         emit TestResult("swapAtoB", amountOut > 0,
-            string(abi.encodePacked("Input A: ", uint2str(swapAmount), ", Got B: ", uint2str(amountOut))));
+            string(abi.encodePacked(
+                "Input A: ", uint2str(swapAmount), 
+                ", Expected B: ", uint2str(amountOut),
+                ", Actual B: ", uint2str(actualReceived),
+                ", Balance Before: ", uint2str(balanceBefore),
+                ", Balance After: ", uint2str(balanceAfter)
+            )));
     }
     
     /**
@@ -116,8 +125,17 @@ contract ManualTestNuaaSwap {
         
         uint256 balanceAfter = tokenA.balanceOf(address(this));
         
+        // Calculate actual received amount for debugging
+        uint256 actualReceived = balanceAfter - balanceBefore;
+        
         emit TestResult("swapBtoA", amountOut > 0,
-            string(abi.encodePacked("Input B: ", uint2str(swapAmount), ", Got A: ", uint2str(amountOut))));
+            string(abi.encodePacked(
+                "Input B: ", uint2str(swapAmount), 
+                ", Expected A: ", uint2str(amountOut),
+                ", Actual A: ", uint2str(actualReceived),
+                ", Balance Before: ", uint2str(balanceBefore),
+                ", Balance After: ", uint2str(balanceAfter)
+            )));
     }
     
     /**
