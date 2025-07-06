@@ -43,7 +43,7 @@ nuaa_swap/
 - **Node.js**: v16+ 
 - **npm**: v8+
 - **Solidity**: ^0.8.20
-- **开发环境**: HardHat
+- **开发环境**: Hardhat
 
 ### Hardhat 部署步骤
 
