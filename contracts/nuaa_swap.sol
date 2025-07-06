@@ -2,10 +2,10 @@
 pragma solidity ^0.8.20;
 
 // import openzeppelin-contracts
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.3/contracts/access/Ownable.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.3/contracts/security/Pausable.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.3/contracts/security/ReentrancyGuard.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.3/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract NuaaSwap is Ownable, Pausable, ReentrancyGuard {
     address public immutable token0;  // fix the address of token0
@@ -26,7 +26,7 @@ contract NuaaSwap is Ownable, Pausable, ReentrancyGuard {
     event FeeToSet(address indexed oldFeeTo, address indexed newFeeTo);
     event ProtocolFeeSet(uint oldFee, uint newFee);
 
-    constructor(address _token0, address _token1) {
+    constructor(address _token0, address _token1) Ownable(msg.sender) {
         token0 = _token0;
         token1 = _token1;
     }
