@@ -16,7 +16,7 @@ module.exports = {
       // 本地测试网络配置
     },
     localhost: {
-      url: "http://127.0.0.1:8545"
+      url: "http://127.0.0.1:65522"
     }
     // sepolia 配置已移除，避免配置错误
   },
