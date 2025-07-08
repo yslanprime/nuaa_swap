@@ -213,7 +213,7 @@ else {
 
 ## 👥 团队信息
 
-**由 [lifeprompter](https://github.com/lifeprompter) 独立完成撰写**
+**由 [codeprompter](https://github.com/lifeprompter) 独立完成撰写**
 
 ---
 
